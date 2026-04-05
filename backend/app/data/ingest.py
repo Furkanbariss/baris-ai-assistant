@@ -38,8 +38,8 @@ def run_ingestion():
     # 4. İkincil Parçalama (Recursive Splitting)
     # Eğer bir bölüm çok detaysa, anlamlı alt parçalara böler
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=600, # 600 karakterden fazla olanları atmışar öne ve arkaya pay vererekten bölüyoruz
-        chunk_overlap=60
+        chunk_size=2000, # 2000 karakterden fazla olanları atmışar öne ve arkaya pay vererekten bölüyoruz
+        chunk_overlap=200
     )
     all_splits = text_splitter.split_documents(md_header_splits)
 
@@ -55,5 +55,7 @@ def run_ingestion():
     
     print(f"Başarılı! Veritabanı '{persist_dir}' klasörüne kaydedildi.")
 
+# Bu dosya doğrudan çalıştırıldığında ingestion sürecini başlatır
+# Eğer başka bir dosyadan import edilirse, run_ingestion fonksiyonu otomatik olarak çalışmaz
 if __name__ == "__main__":
     run_ingestion()
