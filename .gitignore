@@ -1,0 +1,15 @@
+# Python sanal ortamı
+venv/
+.venv/
+env/
+
+# Gizli değişkenler ve yapılandırma dosyaları
+.env
+
+# Python geçici dosyaları
+__pycache__/
+*.pyc
+
+# Veritabanı ve Kişisel Veriler
+backend/app/data/chroma_db/
+backend/app/data/cv.md
