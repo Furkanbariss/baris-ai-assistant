@@ -15,6 +15,7 @@ VALID_REF_CODES = {
     "linkedin": "Linkedin Ana Sayfası",
     "eyl": "Eylül",
     "zmr": "Zümer",
+    "abm": "Abim",
     "guest": "Misafir Kullanıcı"
 }
 
