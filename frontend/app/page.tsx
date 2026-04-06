@@ -1,14 +1,21 @@
-<<<<<<< HEAD
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, User, Bot, Loader2, Sparkles } from "lucide-react";
+import { Send, User, Bot, Loader2, Sparkles, ArrowRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "bot";
   text: string;
 }
+
+// İK Uzmanını Yönlendirecek Hazır Sorular
+const SUGGESTED_QUESTIONS = [
+  "Öne çıkan projeleri ve başarıları nelerdir?",
+  "Hangi yazılım dillerine ve teknolojilere hakim?",
+  "Gönüllülük ve takım çalışması deneyimleri neler?",
+  "Neden onu işe almalıyız? Güçlü yönleri neler?"
+];
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
@@ -32,13 +39,12 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, isLoading]); 
 
-  const sendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  // Mesaj gönderme işlemini ayrı bir fonksiyona aldık ki butonlar da kullanabilsin
+  const submitMessage = async (textToSend: string) => {
+    if (!textToSend.trim()) return;
 
-    const userText = input.trim();
     setInput("");
-    setMessages((prev) => [...prev, { role: "user", text: userText }]);
+    setMessages((prev) => [...prev, { role: "user", text: textToSend }]);
     setIsLoading(true);
 
     try {
@@ -46,7 +52,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          question: userText,
+          question: textToSend,
           ref_code: refCode || "bos",
           session_id: "web_session_1"
         }),
@@ -66,8 +72,13 @@ export default function Home() {
     }
   };
 
+  // Formdan (Enter veya Gönder tuşu) gelen istekleri yakalayan kısım
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitMessage(input);
+  };
+
   return (
-    /* Arka planı OLED siyahına (#050505) çektik */
     <div className="flex flex-col h-[100dvh] bg-[#050505] text-gray-200 font-sans selection:bg-indigo-500/30">
       
       {/* Üst Bilgi Çubuğu */}
@@ -99,7 +110,6 @@ export default function Home() {
                 </div>
               )}
               
-              {/* Bot balonunu çok koyu karbon gri (#111111) yaptık */}
               <div className={`p-3 md:p-4 text-[13px] md:text-base shadow-lg leading-relaxed ${
                 msg.role === "user" 
                   ? "bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-2xl rounded-tr-sm max-w-[92%] md:max-w-[85%] shadow-blue-900/10 whitespace-pre-wrap" 
@@ -115,7 +125,10 @@ export default function Home() {
                       strong: ({node, ...props}) => <strong {...props} className="font-semibold text-gray-100" />,
                       p: ({node, ...props}) => <p {...props} className="mb-3 md:mb-4 last:mb-0" />,
                       ul: ({node, ...props}) => <ul {...props} className="list-disc pl-4 md:pl-5 mb-3 md:mb-4 space-y-1" />,
-                      li: ({node, ...props}) => <li {...props} className="pl-1" />
+                      li: ({node, ...props}) => <li {...props} className="pl-1" />,
+                      img: ({node, ...props}) => (
+                        <img {...props} className="w-full max-w-md rounded-xl mt-4 border border-white/10 shadow-lg object-cover" loading="lazy" />
+                      )
                     }}
                   >
                     {msg.text}
@@ -132,6 +145,26 @@ export default function Home() {
               )}
             </div>
           ))}
+
+          {/* HAZIR SORULAR: Sadece başlangıçta (mesaj sayısı 1 iken) görünür */}
+          {messages.length === 1 && (
+            <div className="pl-10 md:pl-12 pt-2 flex flex-col gap-3">
+              <p className="text-[11px] md:text-xs text-gray-500 font-medium tracking-wide">Şunları sorarak başlayabilirsiniz:</p>
+              <div className="flex flex-wrap gap-2">
+                {SUGGESTED_QUESTIONS.map((question, i) => (
+                  <button
+                    key={i}
+                    onClick={() => submitMessage(question)}
+                    disabled={isLoading || !refCode}
+                    className="group flex items-center gap-2 text-xs md:text-sm text-left bg-[#111111] hover:bg-[#1A1A1A] text-gray-300 border border-white/10 hover:border-indigo-500/50 py-2.5 px-4 rounded-xl transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span>{question}</span>
+                    <ArrowRight size={14} className="text-indigo-500/0 group-hover:text-indigo-400 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Bot Yazıyor Göstergesi */}
           {isLoading && (
@@ -154,14 +187,13 @@ export default function Home() {
       {/* Mesaj Gönderme Çubuğu */}
       <footer className="fixed bottom-0 w-full bg-gradient-to-t from-[#050505] via-[#050505]/95 to-transparent pt-10 md:pt-12 pb-4 md:pb-6 px-3 md:px-4">
         <div className="max-w-3xl mx-auto">
-          <form onSubmit={sendMessage} className="relative flex items-center group">
+          <form onSubmit={handleFormSubmit} className="relative flex items-center group">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={refCode ? "Bir şeyler sorun..." : "Geçerli bir URL gerekli."}
               disabled={isLoading || !refCode}
-              /* Input kutusu da #111111 oldu */
               className="w-full bg-[#111111] text-gray-200 text-sm md:text-base border border-white/10 rounded-xl md:rounded-2xl py-3 md:py-4 pl-4 pr-12 md:pr-14 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg placeholder-gray-600"
             />
             <button

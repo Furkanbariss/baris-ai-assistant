@@ -9,8 +9,12 @@ router = APIRouter()
 init_db()
 
 VALID_REF_CODES = {
-    "kocsistem": "KoçSistem İK Ekibi",
-    "havelsan": "Havelsan İK Ekibi",
+    "devfur": "DevFurkan-Test Kullanıcısı",
+    "aa": "Anadolu Ajansı İK Ekibi",
+    "erkn": "ErkanMP",
+    "linkedin": "Linkedin Ana Sayfası",
+    "eyl": "Eylül",
+    "zmr": "Zümer",
     "guest": "Misafir Kullanıcı"
 }
 
