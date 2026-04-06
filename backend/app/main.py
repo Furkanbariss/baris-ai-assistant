@@ -15,7 +15,7 @@ app.add_middleware(
 )
 
 # Rotaları uygulamaya dahil et
-app.include_router(router)
+app.include_router(router, prefix="/api")
 
 # Sunucunun çalışıp çalışmadığını test etmek için basit bir karşılama
 @app.get("/")

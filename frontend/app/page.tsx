@@ -46,10 +46,15 @@ export default function Home() {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const ref = searchParams.get("ref");
+    
+    // GÜNCELLENDİ: Artık ref yoksa bile bir ID oluşturuyoruz
+    const uniqueId = Math.random().toString(36).substring(2, 8);
     if (ref) {
       setRefCode(ref);
-      const uniqueId = Math.random().toString(36).substring(2, 8);
       setSessionId(`${ref}_${uniqueId}`);
+    } else {
+      setRefCode("organik");
+      setSessionId(`web_${uniqueId}`); // Direkt gelenler "web_..." olarak kaydedilecek
     }
   }, []);
 
@@ -67,7 +72,8 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/chat`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -300,13 +306,13 @@ export default function Home() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={refCode ? "Yeteneklerim hakkında bir soru sorun..." : "Geçerli bir URL gerekli."}
-              disabled={isLoading || !refCode}
+              placeholder="Yeteneklerim hakkında bir soru sorun..."
+              disabled={isLoading} // refCode şartı kalktı!
               className="w-full bg-transparent text-zinc-200 text-[14px] md:text-[15px] py-3.5 pl-5 pr-4 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed placeholder-zinc-500"
             />
             <button
               type="submit"
-              disabled={isLoading || !refCode || !input.trim()}
+              disabled={isLoading || !input.trim()} // refCode şartı kalktı!
               className="bg-zinc-100 hover:bg-white text-zinc-900 p-3 rounded-full transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center shrink-0 mr-0.5"
             >
               {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} className="ml-0.5" />}
