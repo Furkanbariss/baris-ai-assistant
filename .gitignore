@@ -13,3 +13,4 @@ __pycache__/
 # Veritabanı ve Kişisel Veriler
 backend/app/data/chroma_db/
 backend/app/data/cv.md
+backend/app/data/chat_history.db

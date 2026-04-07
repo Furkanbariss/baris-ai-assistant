@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Users, MessageSquare, LayoutDashboard, Search, Eye, X, Loader2, Bot, User as UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Users, MessageSquare, LayoutDashboard, Search, Eye, X, Loader2, Bot, User as UserIcon, LogOut } from "lucide-react";
 
 const REF_CODES = {
   "devfur": "DevFurkan",
@@ -42,6 +43,7 @@ interface DetailModalProps {
 }
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,22 +52,49 @@ export default function AdminDashboard() {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [detailMessages, setDetailMessages] = useState<ChatMessage[]>([]);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetchSessions();
+    // Authentication check
+    const token = localStorage.getItem("admin_token");
+    if (!token) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+      fetchSessions(token);
+    }
   }, []);
 
   useEffect(() => {
-    if (selectedSession) {
-      fetchSessionDetails(selectedSession.session_id);
+    if (selectedSession && isAuthenticated) {
+      const token = localStorage.getItem("admin_token");
+      if (token) {
+        fetchSessionDetails(selectedSession.session_id, token);
+      }
     }
-  }, [selectedSession]);
+  }, [selectedSession, isAuthenticated]);
 
-  const fetchSessions = async () => {
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    router.push("/admin/login");
+  };
+
+  const fetchSessions = async (token: string) => {
     try {
       setLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(`${apiUrl}/api/sessions`);
+      const response = await fetch(`${apiUrl}/api/sessions`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        // Token expired or invalid
+        handleLogout();
+        return;
+      }
+
       const data = await response.json();
       setSessions(data.sessions || []);
       
@@ -80,11 +109,22 @@ export default function AdminDashboard() {
     }
   };
 
-  const fetchSessionDetails = async (sessionId: string) => {
+  const fetchSessionDetails = async (sessionId: string, token: string) => {
     try {
       setDetailLoading(true);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(`${apiUrl}/api/sessions/${sessionId}`);
+      const response = await fetch(`${apiUrl}/api/sessions/${sessionId}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        // Token expired or invalid
+        handleLogout();
+        return;
+      }
+
       const data = await response.json();
       setDetailMessages(data.messages || []);
     } catch (error) {
@@ -115,7 +155,13 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#050505] text-zinc-200 font-sans selection:bg-violet-500/30 flex">
+    <>
+      {!isAuthenticated ? (
+        <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+          <Loader2 className="animate-spin text-violet-400" size={48} />
+        </div>
+      ) : (
+        <div className="min-h-screen bg-[#050505] text-zinc-200 font-sans selection:bg-violet-500/30 flex">
       
       {/* Sol Menü (Sidebar) */}
       <aside className="w-64 bg-zinc-900/50 border-r border-white/5 hidden md:flex flex-col">
@@ -146,6 +192,14 @@ export default function AdminDashboard() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-violet-600 to-blue-600 flex items-center justify-center border-2 border-zinc-900 shadow-md">
               <span className="text-xs font-bold text-white">FB</span>
             </div>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 hover:bg-red-600/20 text-red-400 rounded-lg transition-colors"
+              title="Çıkış Yap"
+            >
+              <LogOut size={18} />
+              <span className="text-sm">Çıkış</span>
+            </button>
           </div>
         </header>
 
@@ -329,6 +383,8 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    )}
+    </>
   );
 }
