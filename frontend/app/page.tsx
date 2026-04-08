@@ -27,7 +27,7 @@ interface Message {
 
 const SUGGESTED_QUESTIONS = [
   "Öne çıkan projeleri ve başarıları nelerdir?",
-  "Furkan Barış Sönmezışık kimdir?"
+  "Furkan Barış Sönmezışık kimdir ve onu diğer adaylardan farklı kılan nedir?"
 ];
 
 export default function Home() {
