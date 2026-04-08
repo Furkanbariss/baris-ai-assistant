@@ -16,7 +16,7 @@ const REF_CODES = {
   "co2": "Şirket 2",
   "co3": "Şirket 3",
   "ftf": "Face to Face",
-  "neco": "Necati",
+  "nc": "Necati",
   "cv": "CV",
   "mail": "E-posta",
   "organik": "Organik"
@@ -131,6 +131,28 @@ export default function AdminDashboard() {
       console.error("Failed to fetch session details:", error);
     } finally {
       setDetailLoading(false);
+    }
+  };
+
+  const deleteSession = async (sessionId: string, token: string) => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/api/sessions/${sessionId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        setSessions((prevSessions) => prevSessions.filter((s) => s.session_id !== sessionId));
+        alert("Oturum başarıyla silindi.");
+      } else {
+        alert("Oturum silinirken bir hata oluştu.");
+      }
+    } catch (error) {
+      console.error("Failed to delete session:", error);
+      alert("Oturum silinirken bir hata oluştu.");
     }
   };
 
@@ -253,6 +275,7 @@ export default function AdminDashboard() {
                     <th className="px-6 py-4 font-medium">Soru Sayısı</th>
                     <th className="px-6 py-4 font-medium">Son Sorduğu</th>
                     <th className="px-6 py-4 font-medium text-right">Detay</th>
+                    <th className="px-6 py-4 font-medium text-right">Sil</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
@@ -287,6 +310,18 @@ export default function AdminDashboard() {
                             onClick={() => setSelectedSession(session)}
                             className="p-2 bg-zinc-800 hover:bg-violet-600 text-zinc-300 hover:text-white rounded-lg transition-colors">
                             <Eye size={16} />
+                          </button>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <button 
+                            onClick={() => {
+                              const token = localStorage.getItem("admin_token");
+                              if (token) {
+                                deleteSession(session.session_id, token);
+                              }
+                            }}
+                            className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                            Sil
                           </button>
                         </td>
                       </tr>

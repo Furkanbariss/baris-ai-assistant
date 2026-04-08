@@ -114,3 +114,11 @@ def get_session_details(session_id):
         })
     
     return messages
+
+# 6. Belirli Bir Session'ın Tüm Mesajlarını Sil
+def delete_session(session_id):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM chats WHERE session_id = ?', (session_id,))
+    conn.commit()
+    conn.close()

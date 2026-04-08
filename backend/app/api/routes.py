@@ -5,7 +5,7 @@ import os
 import secrets
 from datetime import datetime, timedelta
 from app.services.rag_engine import ask_bot
-from app.services.db_logger import init_db, save_chat, get_history, get_all_sessions, get_session_details
+from app.services.db_logger import init_db, save_chat, get_history, get_all_sessions, get_session_details, delete_session
 
 router = APIRouter()
 security = HTTPBearer()
@@ -31,7 +31,7 @@ VALID_REF_CODES = {
     "co2": "company2",
     "co3": "company3",
     "ftf": "face to face",
-    "neco": "Necati",
+    "nc": "Necati",
     "cv": "CV den gelen kullanıcı",
     "mail": "E-posta ile gelen kullanıcı",
     "organik": "link ile kullanıcı",
@@ -128,5 +128,14 @@ def get_session(session_id: str, token: str = Depends(verify_admin_token)):
     try:
         messages = get_session_details(session_id)
         return {"session_id": session_id, "messages": messages}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/sessions/{session_id}")
+def delete_session_endpoint(session_id: str, token: str = Depends(verify_admin_token)):
+    """Belirli bir session'ı ve tüm mesajlarını sil (Admin Panel için)"""
+    try:
+        delete_session(session_id)
+        return {"success": True, "message": "Oturum ve mesajlar silindi."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
