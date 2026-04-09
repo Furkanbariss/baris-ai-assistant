@@ -52,11 +52,16 @@ cd frontend
 npm run dev
 ```
 
+
 ## Model Başarı Oranı
 
 - Son ölçümde model başarı yüzdesi: **%72.7**
 
 Not: Test için 'gpt-4o' modeli kullanılmıştır. Başarı yüzdesi kullanılan modele göre değişmektedir.
+
+## Canlı Demo
+
+Projeyi denemek isterseniz: [www.furkanbaris.dev/?ref=ftf](https://www.furkanbaris.dev/?ref=ftf)
 
 ## Katkı Sağlama
 
