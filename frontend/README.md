@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Frontend (Next.js) - Barış AI Assistant
 
-First, run the development server:
+Bu klasör, Barış AI Assistant projesinin Next.js tabanlı frontend bileşenini içerir. Modern ve kullanıcı dostu bir web arayüzü sunar.
+
+## İçerik
+- [Kurulum](#kurulum)
+- [Çalıştırma](#çalıştırma)
+- [Yapılandırma](#yapılandırma)
+- [Klasör Yapısı](#klasör-yapısı)
+- [Önemli Dosyalar](#önemli-dosyalar)
+- [Test ve Geliştirme](#test-ve-geliştirme)
+- [Sıkça Sorulan Sorular](#sıkça-sorulan-sorular)
+
+## Kurulum
+
+Gereksinimler:
+- Node.js 18+
+- npm veya yarn
+
+```bash
+cd frontend
+npm install
+```
+
+## Çalıştırma
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Yapılandırma
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Ortam değişkenleri için `.env.local` dosyası kullanılabilir.
+- API adresi ve diğer ayarlar `next.config.ts` veya ortam değişkenleriyle yönetilir.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Klasör Yapısı
 
-## Learn More
+```
+frontend/
+	package.json
+	next.config.ts
+	app/
+		layout.tsx      # Genel layout
+		page.tsx        # Ana sayfa
+		admin/          # Admin paneli
+	public/
+		images/         # Statik görseller
+	...
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Önemli Dosyalar
+- `app/page.tsx`: Ana sayfa
+- `app/admin/`: Admin paneli ve giriş
+- `globals.css`: Genel stiller
+- `next.config.ts`: Next.js yapılandırması
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Test ve Geliştirme
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Kod kalitesi için ESLint ve TypeScript kullanılır.
+- Geliştirme sırasında otomatik yeniden yükleme desteklenir.
 
-## Deploy on Vercel
+## Sıkça Sorulan Sorular
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Soru: API adresini nereden değiştiririm?
+	- Cevap: `.env.local` veya `next.config.ts` dosyasından.
+- Soru: Hangi komutla başlatılır?
+	- Cevap: `npm run dev`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+Backend için [Backend README](../backend/README.md) dosyasına bakınız.
