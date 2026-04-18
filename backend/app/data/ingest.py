@@ -32,8 +32,9 @@ def run_ingestion():
         ("####", "Header 4"),
     ]
     
-    md_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=cv_headers_to_split_on)
+    md_splitter = MarkdownHeaderTextSplitter(headers_to_split_on=cv_headers_to_split_on, strip_headers=False)
     md_header_splits = md_splitter.split_text(markdown_content)
+     
 
     # 4. İkincil Parçalama (Recursive Splitting)
     # Eğer bir bölüm çok detaysa, anlamlı alt parçalara böler

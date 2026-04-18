@@ -157,7 +157,7 @@ export default function Home() {
               </div>
             </a>
 
-            <a href="https://github.com/FurkanBaris" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors group overflow-hidden">
+            <a href="https://github.com/furkanbariss" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-colors group overflow-hidden">
               <div className="bg-zinc-800 p-2 rounded-lg group-hover:bg-zinc-600 transition-colors shrink-0">
                 <GithubIcon size={20} className="text-zinc-400 group-hover:text-white" />
               </div>
