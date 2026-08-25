@@ -208,8 +208,8 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-2 px-3 py-1.5 bg-black/20 rounded-full border border-white/5">
-            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.4)]"></div>
-            <span className="text-[10px] md:text-[11px] font-medium text-zinc-300 hidden md:inline">Sistem Aktif</span>
+            <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.4)]"></div>
+            <span className="text-[10px] md:text-[11px] font-medium text-zinc-300 hidden md:inline">Sistem KAPALI!</span>
             <span className="text-[10px] font-medium text-zinc-300 md:hidden">Aktif</span>
           </div>
         </div>
